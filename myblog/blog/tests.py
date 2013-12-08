@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.core.urlresolvers import reverse
 
 from .models import Post, Comment
 
@@ -73,3 +74,20 @@ class CommentModelTest(TestCase):
     def test_unicode_representation(self):
         comment = Comment(body=u'My comment body')
         self.assertEqual(unicode(comment), u'My comment body')
+
+class ListCommentsOnDetailPage(TestCase):
+
+    def setUp(self):
+        self.user = get_user_model().objects.create(username="some_user")
+        self.post = Post.objects.create(title='1-title', body='1-body', author=self.user)
+        self.comm = Comment.objects.create(post_id=1, name='1-comment', body='1-body')
+        self.resp = self.client.get('/post/%s/' % self.post.pk)
+        
+    def test_get(self):
+        """
+        GET /post/1/ should return status 200.
+        """
+        self.assertEqual(200, self.resp.status_code)
+
+    def test_comment_post(self):
+        self.assertContains(self.resp, '1-comment')

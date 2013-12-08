@@ -26,3 +26,6 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return self.body
+
+    def get_absulute_url(self):
+        return '/post/%s/' % self.post.pk

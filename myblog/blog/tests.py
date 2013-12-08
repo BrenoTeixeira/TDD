@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from .models import Post
+from .models import Post, Comment
 
 
 class PostModelTest(TestCase):
@@ -67,3 +67,9 @@ class BlogPostViewTest(TestCase):
     def test_blog_body_in_post(self):
         response = self.client.get(self.post.get_absolute_url())
         self.assertContains(response, self.post.body)
+
+class CommentModelTest(TestCase):
+
+    def test_unicode_representation(self):
+        comment = Comment(body=u'My comment body')
+        self.assertEqual(unicode(comment), u'My comment body')

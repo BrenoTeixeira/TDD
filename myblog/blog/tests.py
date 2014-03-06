@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse
 
 from .models import Post, Comment
+from .forms import CommentForm
 
 
 class PostModelTest(TestCase):
@@ -91,3 +91,17 @@ class ListCommentsOnDetailPage(TestCase):
 
     def test_comment_post(self):
         self.assertContains(self.resp, '1-comment')
+
+
+class CommentFormTest(TestCase):
+
+    def setUp(self):
+        user = get_user_model().objects.create_user('zoidberg')
+        self.post = Post.objects.create(author=user, title="My post title")
+
+    def test_init(self):
+        CommentForm(post=self.post)
+
+    def test_init_without_post(self):
+        with self.assertRaises(KeyError):
+            CommentForm()
